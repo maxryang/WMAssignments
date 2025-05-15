@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <title>University of Oregon Mapping</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--    The Mapbox JavaScript here in the <head> of the page    -->
+      <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.js'></script>
+    <!--    The Mapbox CSS here in the <head> of the page    -->
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css' rel='stylesheet' />
+      
+      <!--   Link to Google font-->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Tagesschrift&display=swap" rel="stylesheet">
+      
+      
+    <style>
+        /* CSS code between the <style> tags */
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+        
+        /* Overrides the pop-up width slightly bigger min-width than the default Mapbox CSS*/
+         .mapboxgl-popup {
+            min-width: 325px;
+            font-family: 'Tagesschrift', serif;
+        }
+        
+        
+        /* The CSS for the "Fly" buttons  */
+        .fly1 {
+            display: inline-block; /* displays over the map */
+            position: relative; /* displays over the map */
+            margin: 0px auto; 
+            width: 30%;  /* width of parent div */
+            padding: 10px;
+            border-style: solid;
+            border-color: oldlace;
+            border-radius: 3px; /* rounded corners */
+            font-size: 1em;
+            text-align: center;
+            font-weight: bold;
+            color: oldlace;
+            background: #3c1518;
+            cursor:pointer;
+        }
+        .fly2 {
+            display: inline-block; /* displays over the map */
+            position: relative; /* displays over the map */
+            margin: 0px auto; 
+            width: 30%;  /* width of parent div */
+            padding: 10px;
+            border-style: solid;
+            border-color: oldlace;
+            border-radius: 3px; /* rounded corners */
+            font-size: 1em;
+            text-align: center;
+            font-weight: bold;
+            color: oldlace;
+            background: #69140e;
+            cursor:pointer;
+        }
+        .fly3 {
+            display: inline-block; /* displays over the map */
+            position: relative; /* displays over the map */
+            margin: 0px auto; 
+            width: 30%;  /* width of parent div */
+            padding: 10px;
+            border-style: solid;
+            border-color: oldlace;
+            border-radius: 3px; /* rounded corners */
+            font-size: 1em;
+            text-align: center;
+            font-weight: bold;
+            color: oldlace;
+            background: #a44200;
+            cursor:pointer;
+        }
+        .fly4 {
+            display: inline-block; /* displays over the map */
+            position: relative; /* displays over the map */
+            margin: 0px auto; 
+            width: 30%;  /* width of parent div */
+            padding: 10px;
+            border-style: solid;
+            border-color: oldlace;
+            border-radius: 3px; /* rounded corners */
+            font-size: 1em;
+            text-align: center;
+            font-weight: bold;
+            color: oldlace;
+            background: #d58936;
+            cursor:pointer;
+        }
+        
+        
+        /* Insert the CSS for the image here */
+        .popupImage{
+           width:100%;
+        }
+
+        /* Insert the CSS for the button here */
+        button {
+            font-family: 'Tagesschrift', serif;
+            font-weight: 600;
+ }
+ 
+        /*  style for items with the class "descriptionPanel" */
+          .descriptionPanel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2;
+            width: 300px;
+            height: 30px;
+            background: rgba(139, 139, 139, 0.75);
+            transition: width 2s, height 2s;
+            overflow: hidden;
+            border-radius: 7px;
+   }
+
+   /* style for items with the class "layerDescription" */
+   .layerDescription {
+     color: white;
+     padding-left: 10px;
+   }
+
+
+
+
+    </style>
+  </head>
+
+  <body>
+      <!--  The map div -->
+      <div id='map'></div>
+      <div id="comparison-container">
+        <div id='owners' class='map'></div>  <!-- div for owners map div -->
+              <div class="descriptionPanel" id="descriptionPanel" style="height: 250px;">
+                 <span onClick=panelSelect() id="glyph" class="chevron glyphicon glyphicon-chevron-down"></span>
+                 <hr/>
+                 <p style="margin-left: 20px; margin-right: 10px;">
+                   These fly to maps shown in this global scale map shows the sounds of popular tourist destinations around the world. As a tourist you may enjoy the sounds of the Portland and Tokyo streets, the music that fills the streets of London, or the noises of hungry bison in the Yellowstone National Park. Click on each marker as you move around the world to listen to what each of these locations sound like!
+                 </p>
+                 </div>
+      
+       <!--  Insert the button elements here  -->
+       <button class='fly1' id='PortlandButton'>Jump to Portland</button>
+       <button class='fly2' id='LondonButton'>Jump to London</button>
+       <button class='fly3' id='YellowstoneButton'>Jump to Yellowstone</button>
+       <button class='fly4' id='TokyoButton'>Jump to Tokyo</button>
+      
+
+
+    <script>
+        // Insert the JavaScript within the <script> tags, within the body   
+        // Start with the Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWF4Z3VsbGlja3NvbiIsImEiOiJjbWFvYTYzdjYwNHRlMmpvanh4a3N3dG0yIn0.VgLi2jiJnh9deV_I1r71jw';
+
+        // Initialize the map
+        var map = new mapboxgl.Map({
+            container: 'map', // id of a div on your page, where the map will be inserted
+            style: 'mapbox://styles/mapbox/outdoors-v11', // stylesheet location
+            center: [-122.6788,45.5212], // starting position [lng, lat] eg. [-122.6788, 45.5212]
+            zoom: 13 // starting zoom 
+        });
+
+        /***  POPUPS  ***/
+            // Popup for marker 1  
+        var popup1_content = '<h2>Play the video to listen to Portland</h2><br>';
+        popup1_content += '<iframe width="300px" src="https://www.youtube.com/embed/z1AdmS-LqyA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        popup1_content += 'Source: Ian Lind, <a href="https://www.youtube.com/embed/z1AdmS-LqyA">YouTube</a>';
+        var popup1 = new mapboxgl.Popup({ minWidth:'300px' })
+            .setHTML(popup1_content);
+              
+        // Popup for marker 2  
+        var popup2_content = '<h2>Press play to listen to London in 1928</h2><br>';
+        popup2_content += '<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/892653091&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/londonstreetnoises" title="London Street Noises" target="_blank" style="color: #cccccc; text-decoration: none;">London Street Noises</a> · <a href="https://soundcloud.com/londonstreetnoises/cromwell-1928" title="London Cromwell Road / Queen&#x27;s Gate in 1928" target="_blank" style="color: #cccccc; text-decoration: none;">London Cromwell Road / Queen&#x27;s Gate in 1928</a></div>';
+        popup2_content += 'Source: LondonStreetNoises.co.uk, <a href="https://soundcloud.com/londonstreetnoises"> SoundCloud </a>';
+               
+        var popup2 = new mapboxgl.Popup({ minWidth:'300px' })
+            .setHTML(popup2_content);
+       
+           
+        // Popup for marker 3  
+        var popup3_content = '<h2>Press play to listen to a bison eating</h2><br>';  
+        popup3_content += '<audio controls><source src="sounds/yell-YELLBisonEating150313.mp3" type="audio/mpeg">Your browser does not support the audio element.</audio>'; 
+        popup3_content += 'Source: NPS/Jennifer Jerret, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';
+        popup3_content += '<img class="popupImage" alt="Photo of a bison herd in Yellowstone during winter, standing on the snowy ground while steam appears from the river the bison are standing next to" src="https://www.nps.gov/yell/learn/photosmultimedia/images/ndh-yell-bison-gibbon_2.jpg?maxwidth=1300&maxheight=1300&autorotate=false&format=webp">' ;       
+        popup3_content += 'Source: NPS/Neal Herbert, <a href="https://www.nps.gov/yell/learn/photosmultimedia/sounds-bisoneating.htm">NPS</a>';
+        
+        var popup3 = new mapboxgl.Popup({ minWidth:'300px' })
+            .setHTML(popup3_content);
+
+        // Popup for marker 4
+        var popup4_content = '<h2>Press play to listen to the sounds of daily Tokyo life</h2><br>';
+        popup4_content += '<iframe width="300" src="https://www.youtube.com/embed/VJ21QtP5U1k?si=KlKxj5GKW14KWVR-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        popup4_content += 'Source: Metropolis/Patrick Balfe, <a href="https://metropolisjapan.com/the-sounds-of-tokyo/">Article</a>';
+
+        var popup4 = new mapboxgl.Popup({ minWidth: '300px'})
+          .setHTML(popup4_content);
+
+
+        /***  END POPUPS  ***/  
+
+
+        /***  MARKERS  ***/
+             // Marker 1 - Portland
+     var marker1 = new mapboxgl.Marker({color:'#3c1518'})
+        .setLngLat([-122.6788,45.5212]) // Portland 
+        .setPopup(popup1)
+        .addTo(map);
+
+        
+    // Marker 2 - London 
+    var marker2 = new mapboxgl.Marker({color:'#69140e'})
+       .setLngLat([-0.1534307, 51.501223]) // London 
+       .setPopup(popup2)
+       .addTo(map);
+
+        
+    // Marker 3 - Yellowstone
+    var marker3 = new mapboxgl.Marker({color:'#a44200'})
+      .setLngLat([-110.74524187568,44.706216445069]) // Yellowstone
+      .setPopup(popup3)
+      .addTo(map);
+
+    // Marker 4 - Tokyo
+    var marker4 = new mapboxgl.Marker({color:'#d58936'})
+      .setLngLat([139.741971, 35.692573]) // Tokyo
+      .setPopup(popup4)
+      .addTo(map);
+
+        /***  END MARKERS  ***/
+
+
+        /***  LISTENERS  ***/
+            // Add a 'Listener' to the button element with the ID 'LondonButton'.
+            document.getElementById('LondonButton').addEventListener('click', function () {
+              map.jumpTo({
+                center: [-0.1534307, 51.501223], 
+                zoom: 11
+        });
+});
+        
+            // Add a 'Listener' to the button element with the ID 'PortlandButton'.
+            document.getElementById('PortlandButton').addEventListener('click', function () {
+              map.jumpTo({
+                center:[-122.6788,45.5212], 
+                zoom: 9
+        });
+});
+            // Add a 'Listener' to the button element with the ID 'YellowstoneButton'.
+            document.getElementById('YellowstoneButton').addEventListener('click', function () {
+              map.jumpTo({
+                center:[-110.74524187568,44.706216445069], 
+                zoom: 9
+        });
+});
+
+              // Add a 'Listener' to the button element with the ID 'YellowstoneButton'.
+              document.getElementById('TokyoButton').addEventListener('click', function () {
+                map.jumpTo({
+                  center:[139.741971, 35.692573], 
+                  zoom: 9
+        });
+});
+
+            map.on('mouseenter', layerID, function () {
+              map.getCanvas().style.cursor = 'pointer';
+  });
+
+             // Change it back to a pointer when it leaves.
+               map.on('mouseleave', layerID, function () {
+                map.getCanvas().style.cursor = '';
+  });
+
+        /***  END LISTENERS  ***/
+    </script>
+
+  </body>
+
+</html>
