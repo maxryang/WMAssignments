@@ -1,0 +1,275 @@
+<!-- A Versatile Layout for Full-screen Maps by Andy Cochran
+Andy Cochran 
+From https://medium.com/nyc-planning-digital/a-versatile-layout-for-full-screen-maps-229cec508b22 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Faculty Research</title>
+
+    
+    <!-- JavaScript Libraries-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/js/foundation.js"></script>
+     <!--    The Mapbox JavaScript here in the <head> of the page    -->
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.js'></script>
+    <!--    The Mapbox CSS here in the <head> of the page    -->
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css' rel='stylesheet' />
+
+  
+    <!-- CSS Links -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.3/css/foundation.min.css" rel="stylesheet" />
+    <link href="webpagelayout.css" rel="stylesheet" />
+    
+
+    
+</head>
+
+<body>
+
+    <div class="site-header">
+        <strong class="site-title">UO Geography Faculty Research Collection</strong>
+    </div>
+
+    <div class="site-main grid-x has-content-open">
+
+        <div class="search-container cell medium-3 large-2">
+            <input type="text" placeholder="Search..." class="search" />
+            <ul class="search-results no-bullet">
+                <li>Search Result 1</li>
+                <li>Search Result 2</li>
+                <li>Search Result 3</li>
+            </ul>
+        </div>
+        
+        <div id='map' class="map-container cell medium-auto large-order-2">
+             <!--  ADD iframe here, inside the versitle layout's map container (VI.2.)   -->
+             <!-- <iframe src="finalprojectgeogprof.html" title="Map"></iframe>  -->
+
+        </div>
+
+        <!--  Sidebar panel  --> 
+        <div class="sidebar cell medium-3 large-2 large-order-1 show-for-medium">
+            <h5>Sidebar</h5>
+            <ul>
+                <li><a class="content-link" href="#">Open Content</a></li>
+                <li>Shaul Cohen</li>
+                <li>John Christian</li>
+                <li>Dan Gavin</li>
+                <li>Xiaobo Su</li>
+                <li>Leigh Johnson</li>
+            </ul>
+
+            <hr />
+
+        </div>
+
+        <div class="content-close-button-container">
+            <a href="#" class="content-close-button">×</a>
+        </div>
+        
+        <!--  Content panel  -->
+        <div class="content cell large-5 large-order-3">
+            <h2>Faculty Research</h2>
+            <p style="margin-left: 20px; margin-right: 10px;">
+                   The locations shown in this interactive map exhibit research areas or points of interest for University of Oregon Geography Department faculty!
+                 </p>
+        </div>
+
+    </div>
+
+    <script>
+       
+        $(document).ready(function() {
+
+            $('.content-close-button').click(function() {
+                $('.content-close-button').hide();
+                $('.content').hide();
+                $('.site-main').removeClass('has-content-open')
+
+                // When the map is resized programmatically, window resize must be triggered so that the map renders in the newly allotted space.
+                window.dispatchEvent(new Event('resize'));
+
+            });
+
+            $('.content-link').click(function() {
+                $('.content-close-button').show();
+                $('.content').show();
+                $('.site-main').addClass('has-content-open')
+                window.dispatchEvent(new Event('resize'));
+            });
+
+        });
+
+
+
+        // Insert the JavaScript within the <script> tags, within the body   
+        // Start with the Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWF4Z3VsbGlja3NvbiIsImEiOiJjbWF4MHFzOXMwMHl4MmlvaGRnbmJqc3lqIn0.3-6kYjsG0eLueO2hIPItgA';
+
+        // Initialize the map
+        var map = new mapboxgl.Map({
+            container: 'map', // id of a div on your page, where the map will be inserted
+            style: 'mapbox://styles/mapbox/satellite-v9', // stylesheet location
+            center: [-8.264538, 42.636615], // starting position [lng, lat] eg. [-122.6788, 45.5212]
+            zoom: 1 // starting zoom 
+        });
+
+        /***  POPUPS  ***/
+            // Popup for marker 1  
+        // Popups Section
+// Popup for marker 1
+// Popups Section
+// Popup for marker 1
+var popup1_content = '<h2>Xiaobo Su - Myanmar Border</h2><br>';
+popup1_content += 'Source: Political Geography and the Myanmar Border <a href="https://www.researchgate.net/profile/Xiaobo-Su">Profile</a>';
+var popup1 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup1_content);
+
+// Popup for marker 2
+var popup2_content = '<h2>John Christian - Pine Island Trough, Antarctica</h2><br>';
+popup2_content += 'Source: Antarctic Research in Marine Geology <a href="https://scholarsbank.uoregon.edu/xmlui/handle/1794/1364">Article</a>';
+var popup2 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup2_content);
+
+// Popup for marker 3
+var popup3_content = '<h2>Dan Gavin - West Kalimantan, Indonesia</h2><br>';
+popup3_content += 'Source: Palaeoecological Research on Tropical Forests <a href="https://geography.uoregon.edu/profile/dgavin/">Profile</a>';
+var popup3 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup3_content);
+
+// Popup for marker 4
+var popup4_content = '<h2>Dan Gavin - Olympic Peninsula, Washington</h2><br>';
+popup4_content += 'Source: Holocene Vegetation Change <a href="https://geography.uoregon.edu/profile/dgavin/">Profile</a>';
+var popup4 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup4_content);
+
+// Popup for marker 5
+var popup5_content = '<h2>Dan Gavin - Acorn Woman Lake, Oregon</h2><br>';
+popup5_content += 'Source: Oregon Paleoenvironmental Studies <a href="https://geography.uoregon.edu/profile/dgavin/">Profile</a>';
+var popup5 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup5_content);
+
+// Popup for marker 6
+var popup6_content = '<h2>Shaul Cohen - Derry/Londonderry</h2><br>';
+popup6_content += 'Source: Winning While Losing: The Apprentice Boys of Derry Walk Their Beat <a href="https://www.researchgate.net/publication/222579485_Winning_while_Losing_The_Apprentice_Boys_of_Derry_Walk_Their_Beat">Article</a>';
+var popup6 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup6_content);
+
+// Popup for marker 7
+var popup7_content = '<h2>Shaul Cohen - Jerusalem</h2><br>';
+popup7_content += 'Source: Contested Cities in the Middle East <a href="https://geography.uoregon.edu/profile/scohen/">Profile</a>';
+var popup7 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup7_content);
+
+// Popup for marker 8
+var popup8_content = '<h2>Shaul Cohen - Oregon State Penitentiary</h2><br>';
+popup8_content += 'Source: Incarceration and Social Justice <a href="https://geography.uoregon.edu/profile/scohen/">Profile</a>';
+var popup8 = new mapboxgl.Popup({minWidth:'300px'}).setHTML(popup8_content);
+
+
+
+
+// Markers Section
+// Marker 1: Xiaobo Su – Myanmar Border
+var marker1 = new mapboxgl.Marker({ color: '#e6194b' })
+  .setLngLat([97.8519, 24.0128])
+  .setPopup(popup1)
+  .addTo(map);
+
+// Marker 2: John Christian – Pine Island Trough, Antarctica
+var marker2 = new mapboxgl.Marker({ color: '#4363d8' })
+  .setLngLat([-107.0000, -72.0000])
+  .setPopup(popup2)
+  .addTo(map);
+
+// Marker 3: Dan Gavin – West Kalimantan, Indonesia
+var marker3 = new mapboxgl.Marker({ color: '#3cb44b' })
+  .setLngLat([113.9213, -0.7893])
+  .setPopup(popup3)
+  .addTo(map);
+
+// Marker 4: Dan Gavin – Olympic Peninsula, Washington
+var marker4 = new mapboxgl.Marker({ color: '#3cb44b' })
+  .setLngLat([-123.7142, 47.8021])
+  .setPopup(popup4)
+  .addTo(map);
+
+// Marker 5: Dan Gavin – Acorn Woman Lake, Oregon
+var marker5 = new mapboxgl.Marker({ color: '#3cb44b' })
+  .setLngLat([-122.5, 44.5])
+  .setPopup(popup5)
+  .addTo(map);
+
+// Marker 6: Shaul Cohen – Derry/Londonderry, Northern Ireland
+var marker6 = new mapboxgl.Marker({ color: '#f58231' })
+  .setLngLat([-7.3183, 55.0068])
+  .setPopup(popup6)
+  .addTo(map);
+
+// Marker 7: Shaul Cohen – Jerusalem
+var marker7 = new mapboxgl.Marker({ color: '#f58231' })
+  .setLngLat([35.2137, 31.7683])
+  .setPopup(popup7)
+  .addTo(map);
+
+// Marker 8: Shaul Cohen – Oregon State Penitentiary
+var marker8 = new mapboxgl.Marker({ color: '#f58231' })
+  .setLngLat([-123.0090, 44.9311])
+  .setPopup(popup8)
+  .addTo(map);
+
+// Add additional marker definitions from full 24 locations
+// Markers 9 through 24 go here (format matches above)
+
+//marker groups for each faculty member
+// Group markers by researcher name
+var markerGroups = {
+  "Dan Gavin": [marker3, marker4, marker5],
+  "Shaul Cohen": [marker6, marker7, marker8],
+  "Xiaobo Su": [marker1],
+  "John Christian": [marker2]
+};
+
+// Function to fit map to markers of a selected group
+function zoomToMarkers(markers) {
+  if (!markers || markers.length === 0) {
+    alert("No markers for this person.");
+    return;
+  }
+
+  // Create a new bounding box to include all marker positions
+  var bounds = new mapboxgl.LngLatBounds();
+
+  markers.forEach(function(marker) {
+    bounds.extend(marker.getLngLat());
+  });
+
+  // Optionally hide all markers first
+  Object.values(markerGroups).flat().forEach(m => m.getElement().style.display = 'none');
+
+  // Show only selected markers
+  markers.forEach(m => m.getElement().style.display = '');
+
+  // Fit map to bounds with some padding
+  map.fitBounds(bounds, { padding: 100 });
+}
+
+// Attach click handlers to sidebar list items
+document.querySelectorAll('.sidebar ul li').forEach(function(li) {
+  li.style.cursor = 'pointer';  // make it clear they are clickable
+
+  li.addEventListener('click', function() {
+    var personName = li.textContent.trim();
+
+    // If it's a name in our markerGroups
+    if (markerGroups.hasOwnProperty(personName)) {
+      zoomToMarkers(markerGroups[personName]);
+    } else if (personName === "Open Content") {
+      // Optional: handle this differently or do nothing
+    } else {
+      alert("No markers associated with '" + personName + "'");
+    }
+  });
+});
+
+
+    </script>
+
+</body>
+
+</html>
