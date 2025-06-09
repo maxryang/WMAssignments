@@ -42,12 +42,14 @@
 
     <div class="site-main grid-x has-content-open">
 
+      <!--  Add in the geocoder search bar  -->
     <div class="search-container cell medium-3 large-2">
     <div id="geocoder" style="margin-bottom: 1em;"></div>
     </div>
    
         <div id='map' class="map-container cell medium-auto large-order-2"></div>
 
+        <!--  legend for associating each prof with a color  -->
         <div id="legend" class="map-legend">
         <h4>Faculty Locations</h4>
         <div><span class="legend-color" style="background-color: #f58231;"></span> Shaul Cohen</div>
@@ -92,9 +94,10 @@
         <div class="content cell large-5 large-order-3">
             <h2>The Importance of Accessible Research</h2>
             <p style="margin-left: 20px; margin-right: 10px;">
-                   The locations shown in this interactive map exhibit research areas or points of interest for University of Oregon Geography Department faculty!
-                   Students first begin their journey at the University of Oregon with typically no prior knowledge that academic research is something that they can 
-                   participate in as well!
+                   The collection of research presented on this map shows the locations of the University of Oregon's Geography Department Faculty. Each point is associated with a faculty member and the research they have either conducted at that location or about that location. Members of the UO GEOG Department faculty were asked to submit a list of three research sites that they would like to be showcased on this website, highlighting their specific interests and academic focuses. This map can also be used by prospective and current students to give a glimpse into the research that their professors are conducting. Typically, it is difficult for students to get involved with research on campus, so this map was created as a tool for both students and professors to see the current academic progress within the department. This website also includes a secondary map that shows the locations of laboratories that are under the supervision of faculty listed above. This allows for students to use the larger map to find which professor they have the most aligned interests with, and then see if there are opportunities on campus to get involved with this research, even down to the room in Condon itself! Students and faculty are an integral part of campus life, and this map aims to create a more accessible way to access these academic articles and highlight areas of study through visual representations. 
+                  Feel free to click on any of the point locations to see which professor is conducting research about this area and then follow the link to read more!
+ 
+
                  </p>
                 
         </div>
@@ -129,8 +132,7 @@
 
 
 
-        // Insert the JavaScript within the <script> tags, within the body   
-        // Start with the Mapbox access token
+        //mapbox access token
         mapboxgl.accessToken = 'pk.eyJ1IjoibWF4Z3VsbGlja3NvbiIsImEiOiJjbTkxdXZjaGcwNHd0Mmttdjl0Ym04eno5In0.XnHhY-UtgEygGp23ZpOmeg';
 
         // Initialize the map
@@ -144,20 +146,20 @@
         map.setProjection('globe');
 
        
-        // Add Mapbox Geocoder (search bar) to your page
+        // adding geocoder to the map initialization
               var geocoder = new MapboxGeocoder({
                   accessToken: mapboxgl.accessToken,
                   mapboxgl: mapboxgl,
                   placeholder: 'Search for any place',
                   marker: {
-                      color: '#FF8C00'
+                      color: 'black'
                   }
               });
 
-              // Add geocoder to the #geocoder div container
+              
               document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
-              // When user selects a search result, fly to that location on the map
+              // fly to location when result is searched
               geocoder.on('result', function(e) {
                   var coords = e.result.center; // [lng, lat]
                   map.flyTo({
@@ -395,55 +397,52 @@ var markerGroups = {
   "Leigh Johnson": [marker16, marker17, marker18],
 };
 
-// Function to fit map to markers of a selected group
+// make the markers fit together in a group
 function zoomToMarkers(markers) {
   if (!markers || markers.length === 0) {
     alert("No markers for this person.");
     return;
   }
 
-  // Create a new bounding box to include all marker positions
+  // bounds for the marker groups
   var bounds = new mapboxgl.LngLatBounds();
 
   markers.forEach(function(marker) {
     bounds.extend(marker.getLngLat());
   });
 
-  // Optionally hide all markers first
+  // hide markers not in the group
   Object.values(markerGroups).flat().forEach(m => m.getElement().style.display = 'none');
 
-  // Show only selected markers
+  // show markers of the faculty member
   markers.forEach(m => m.getElement().style.display = '');
-
-  // Fit map to bounds with some padding
   map.fitBounds(bounds, { padding: 100 });
 }
 
-    // Attach click handlers to sidebar list items
+    // make the names in the sidebar clickable
     document.querySelectorAll('.sidebar ul li').forEach(function(li) {
       li.style.cursor = 'pointer';  // make it clear they are clickable
 
       li.addEventListener('click', function() {
         var personName = li.textContent.trim();
 
-        // If it's a name in our markerGroups
         if (markerGroups.hasOwnProperty(personName)) {
           zoomToMarkers(markerGroups[personName]);
         } else if (personName === "Open Content") {
-          // Optional: handle this differently or do nothing
+          // If no markers found then return nothing
         } else {
           alert("No markers associated with '" + personName + "'");
         }
       });
     });
 
-    // === Mini Map Section ===
+    // inset mini map
 
     var miniMap = new mapboxgl.Map({
         container: 'mini-map',
         style: 'mapbox://styles/mapbox/dark-v11',
-        center: [-123.07826211396757, 44.04504425264123], // Eugene, Oregon as an example
-        zoom: 17,
+        center: [-123.07826211396757, 44.04504425264123], // condon hall 
+        zoom: 17, // want condon to be center when map is opened so zoom needs to be high number 
         minZoom: 17,
         maxZoom: 20
     });
@@ -453,7 +452,7 @@ function zoomToMarkers(markers) {
 
     // Add markers to the mini map
     var miniMarkers = [
-        { name: "InfoGraphics Lab", coords: [-123.07837509677071, 44.04510060263486] },
+        { name: "InfoGraphics Lab", coords: [-123.07837509677071, 44.04510060263486] }, 
         { name: "The Glacier Lab", coords: [-123.07836810205862, 44.04492791520667] },
         { name: "Paleoecology/Biogeography Lab", coords: [-123.07833091528845, 44.04532440383874] }
     ];
